@@ -92,23 +92,21 @@ def GetFileFromThisRootDir(dir,ext = None,isSubDir = True):
     return allfiles
 
 #合并词典
-def merge_dict(d1, d2, isoverwrite, istip, path):
+def merge_dict(d1, d2, isOverwrite, isTip, path):
     dd = defaultdict(list)
     print(path)
     for d in (d1, d2):
         for key, value in d.items():
             if len(key) > 0:
                 if key in dd.keys():
-                    if istip:
-                        if isoverwrite:
-                            #各个pack文件中存在的重复词条（不含强制覆盖词条）
-                            #print("[Warning]", "Key:", key)
-                            print("Duplicate Key [Overwrite]:", key)
-                        else:
-                            #忽略原语言包中的词条，使用pack中的词条
-                            #print("[Warning, Ignore]", "Key:", key)
-                            print("Duplicate Key [Ignore]:", key)
-                    if not isoverwrite:
+                    if isTip:
+                        isSame = str(dd[key]) == str(value)
+                        print("Duplicate Key{0}{1}: {2}".format(" [Same]" if isSame else "", " [Overwrite]" if isOverwrite else " [Ignore]", key))
+                        if not isSame:
+                            print("[Old]", dd[key])
+                            print("[New]", value)
+
+                    if not isOverwrite:
                         continue
 
                 dd[key] = value
@@ -117,7 +115,7 @@ def merge_dict(d1, d2, isoverwrite, istip, path):
 
 pack = {}
 overwritePackList = {}
-allPack = GetFileFromThisRootDir(currentDir, packExtension, True)
+allPack = GetFileFromThisRootDir(packFolderPath, packExtension, True)
 
 #读取原始语言包
 if len(defaultJSONPath) > 0:
@@ -156,7 +154,7 @@ for fn in allPack:
         print(traceback.format_exc(), file=sys.stderr)
 
 #覆盖已定义的词条
-pack = merge_dict(pack, tmpPack, True, False, "Updateing...\r\n")
+pack = merge_dict(pack, tmpPack, True, True, "Updateing...\r\n")
 
 #读取强制覆盖语言包
 pack["----pack overwrite new section----"] = "----以下内容Pack强制覆盖新部分----"
