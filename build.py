@@ -101,10 +101,9 @@ def merge_dict(d1, d2, isOverwrite, isTip, path):
                 if key in dd.keys():
                     if isTip:
                         isSame = str(dd[key]) == str(value)
-                        print("Duplicate Key{0}{1}: {2}".format(" [Same]" if isSame else "", " [Overwrite]" if isOverwrite else " [Ignore]", key))
+                        print("Duplicate Key{0}{1}:\r\n[Key] {2}".format(" [Same]" if isSame else "", " [Overwrite]" if isOverwrite else " [Ignore]", key))
                         if not isSame:
-                            print("[Old]", dd[key])
-                            print("[New]", value)
+                            print("[Old] {0}\r\n[New] {1}".format(dd[key], value))
 
                     if not isOverwrite:
                         continue
